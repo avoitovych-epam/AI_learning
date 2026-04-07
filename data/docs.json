@@ -1,0 +1,8 @@
+[
+  { "id": "d1", "title": "Prompt engineering", "text": "Clear instructions, constraints, and examples improve reliability. Prefer structured outputs for automation." },
+  { "id": "d2", "title": "Embeddings", "text": "Embeddings represent text as vectors. Similar meaning results in nearby vectors; use cosine similarity for search." },
+  { "id": "d3", "title": "RAG", "text": "Retrieval-augmented generation retrieves relevant chunks and injects them into the prompt to ground answers." },
+  { "id": "d4", "title": "Chunking", "text": "Split documents into 600–1000 character chunks to improve retrieval precision and reduce irrelevant context." },
+  { "id": "d5", "title": "Agents and tools", "text": "Agents can call tools like calculators or retrievers in a loop: decide → act → observe → answer." },
+  { "id": "d6", "title": "Security", "text": "Never commit API keys. Use environment variables and keep secrets out of logs." }
+]
