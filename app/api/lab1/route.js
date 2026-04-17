@@ -5,12 +5,10 @@ import { chat } from "@/lib/ollama";
 function extractJson(text) {
   if (!text) return "";
 
-  // remove ```json ... ``` or ``` ... ```
   let cleaned = text.trim();
   cleaned = cleaned.replace(/^```(?:json)?/i, "").trim();
   cleaned = cleaned.replace(/```$/i, "").trim();
 
-  // if extra text exists, take the first {...} block
   const start = cleaned.indexOf("{");
   const end = cleaned.lastIndexOf("}");
   if (start >= 0 && end > start) return cleaned.slice(start, end + 1);
@@ -28,7 +26,6 @@ export async function POST(req) {
   const { text } = await req.json();
   const input = (text ?? "").toString().trim();
 
-  // 1) Basic summary
   const basic = await chat({
     messages: [
       { role: "system", content: "You are concise." },
@@ -37,7 +34,6 @@ export async function POST(req) {
     temperature: 0.3
   });
 
-  // 2) Few-shot bullets
   const fewShot = await chat({
     messages: [
       { role: "system", content: "Write crisp bullet points." },
@@ -51,7 +47,6 @@ export async function POST(req) {
     temperature: 0.3
   });
 
-  // 3) Constrained JSON (local models may still wrap with ``` or forget risks)
   const jsonText = await chat({
     messages: [
       {
@@ -74,7 +69,6 @@ export async function POST(req) {
   try {
     const obj = JSON.parse(extractJson(jsonText));
 
-    // Auto-fix common local-model failures
     if (!Array.isArray(obj.key_points)) obj.key_points = [];
     if (!Array.isArray(obj.risks)) obj.risks = [];
 

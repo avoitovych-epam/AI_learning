@@ -21,7 +21,6 @@ async function post(path: string, body: unknown) {
   }
 
   if (!r.ok) {
-    // Don’t throw: return a structured error for friendly UI
     return { error: `HTTP ${r.status}`, details: json };
   }
   return json;
@@ -155,6 +154,31 @@ export default function Page() {
       <div style={styles.hint}>
         Tip: if responses are slow on CPU, consider <code>OLLAMA_CHAT_MODEL=llama3.2:3b</code>.
       </div>
+
+      {/* Separate section for SQL Analytics Demo */}
+      <div style={{ marginTop: 24, padding: 16, border: '1px solid #e6e6e6', borderRadius: 12, background: '#f9f9f9' }}>
+        <h4 style={{ margin: '0 0 8px', fontSize: 18, color: '#333' }}>Explore SQL Analytics</h4>
+        <p style={{ margin: '0 0 12px', fontSize: 14, color: '#555' }}>
+          Dive into the SQL Analytics Demo to explore data insights and analytics capabilities.
+        </p>
+        <a
+          href="/sql-analytics"
+          style={{
+            display: 'inline-block',
+            padding: '10px 16px',
+            borderRadius: 8,
+            background: '#0070f3',
+            color: '#fff',
+            textDecoration: 'none',
+            fontSize: 14,
+            fontWeight: 'bold',
+            textAlign: 'center',
+          }}
+          className="hover:bg-blue-600"
+        >
+          Open SQL Analytics Demo →
+        </a>
+      </div>
     </div>
   );
 }
@@ -207,6 +231,7 @@ function Lab1() {
       </div>
 
       <Output data={out} />
+      
     </div>
   );
 }
@@ -334,7 +359,6 @@ function Agent() {
 
               setOut(res);
 
-              // if backend returned reply, append to local history
               const replyText = (res && !res.error && res.reply) ? String(res.reply) : JSON.stringify(res);
               setMessages([...next, { role: "assistant", content: replyText }]);
             } finally {
