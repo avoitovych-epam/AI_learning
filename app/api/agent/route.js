@@ -12,7 +12,6 @@ function calculator(expression) {
 }
 
 async function ragAnswer(question) {
-  // call our existing RAG API (lab3) internally
   const base = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const r = await fetch(`${base}/api/lab3`, {
     method: "POST",
@@ -23,7 +22,6 @@ async function ragAnswer(question) {
 }
 
 function looksLikeMath(input) {
-  // e.g. "Compute (12.5*4)/3" or "2+2"
   const s = input.toLowerCase();
   return s.includes("compute") || s.includes("calculate") || safeExpr(input);
 }
@@ -33,7 +31,6 @@ export async function POST(req) {
   const messages = Array.isArray(body.messages) ? body.messages : [];
   const lastUser = [...messages].reverse().find(m => m.role === "user")?.content ?? "";
 
-  // --- simple "agent" decision ---
   if (looksLikeMath(lastUser)) {
     const expr = lastUser.replace(/compute|calculate/gi, "").trim();
     const toolResult = calculator(expr);
@@ -45,12 +42,10 @@ export async function POST(req) {
     });
   }
 
-  // if user asks about "RAG/embeddings/onboarding/notes" -> use RAG
   const lower = String(lastUser).toLowerCase();
   if (lower.includes("rag") || lower.includes("onboarding") || lower.includes("notes") || lower.includes("embeddings") || lower.includes("chunk")) {
     const toolResult = await ragAnswer(lastUser);
 
-    // now generate a grounded final response using retrieved context
     const reply = await chat({
       messages: [
         { role: "system", content: "Answer grounded in the provided tool result. If tool result says unknown, say you don't know." },
@@ -62,7 +57,6 @@ export async function POST(req) {
     return NextResponse.json({ tool: "ragAnswer", toolResult, reply });
   }
 
-  // otherwise just chat
   const reply = await chat({ messages, temperature: 0.4 });
   return NextResponse.json({ tool: "none", reply });
 }
